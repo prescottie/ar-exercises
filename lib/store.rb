@@ -3,15 +3,24 @@ class Store < ActiveRecord::Base
   validates :name, :annual_revenue, presence: true 
   validates :name, length: { minimum: 3 }
   validates :annual_revenue, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validate :has_clothes?
+  # validate :has_clothes?
 
+  before_destroy :check_for_employess
 
-  def has_clothes?
-    if !mens_apparel && !womens_apparel
-      errors.add(:mens_apparel, "must have men's or womens clothing")
-      errors.add(:womens_apparel, "must have men's or womens clothing")
+private
+  # def has_clothes?
+  #   if !mens_apparel && !womens_apparel
+  #     errors.add(:mens_apparel, "must have men's or womens clothing")
+  #     errors.add(:womens_apparel, "must have men's or womens clothing")
+  #   end
+  # end
+
+  def check_for_employess
+    if self.employees.any?
+      throw :abort
     end
   end
+
 end
 
 
